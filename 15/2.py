@@ -1,4 +1,4 @@
-f = open(0)
+f = open("test.txt")
 parts = [s.strip() for s in f.read().split("\n\n")]
 
 conv = {"#": "##", ".": "..", "O": "[]", "@": "@."}
@@ -7,7 +7,7 @@ m = []
 for l in parts[0].split("\n"):
     ll = []
     for c in l:
-        ll.append(conv[c])
+        ll.extend(list(conv[c]))
     m.append(ll)
 
 
@@ -26,6 +26,8 @@ for r, l in enumerate(m):
     if p:
         break
 
+print(p)
+
 moves = {"<": (0, -1), ">": (0, 1), "^": (-1, 0), "v": (1, 0)}
 
 
@@ -41,7 +43,7 @@ def move(m, d, p):
     if has in ["[", "]"]:
         # horizontal mvmt is similar to pt1
         if dr == 0:
-            nr, nc = want[0], want[1]
+            nr, nc = r, c
             while True:
                 nr, nc = nr + dr, nc + dc
                 if nr < 0 or nr >= len(m) or nc < 0 or nc >= len(m[0]):
