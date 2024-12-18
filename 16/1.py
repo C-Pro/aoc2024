@@ -72,17 +72,18 @@ best = dists[e[0]][e[1]][0]
 for c in prev:
     if len(prev[c]) > 1:
         print(c, prev[c])
+#exit(0)
+
+
+for r, l in enumerate(m):
+    for c, v in enumerate(l):
+        if dists[r][c][0] == inf:
+            print("####", end="")
+        else:
+            print("%04d" % dists[r][c][0], end="")
+    print()
+
 exit(0)
-
-
-# for r, l in enumerate(m):
-#     for c, v in enumerate(l):
-#         if dists[r][c][0] == inf:
-#             print("####", end="")
-#         else:
-#             print("%04d" % dists[r][c][0], end="")
-#     print()
-
 def pmv(m, spots):
     for r, l in enumerate(m):
         for c, v in enumerate(l):
