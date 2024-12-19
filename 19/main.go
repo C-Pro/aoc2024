@@ -5,24 +5,7 @@ import (
 	"io"
 	"os"
 	"strings"
-
-	"github.com/c-pro/geche"
 )
-
-/*
-Input file example:
-
-r, wr, b, g, bwu, rb, gb, br
-
-brwrr
-bggr
-gbbr
-rrbgbr
-ubwu
-bwurrg
-brgr
-bbrgwb
-*/
 
 func main() {
 	f, err := os.Open(os.Args[1])
@@ -30,7 +13,7 @@ func main() {
 		panic(err)
 	}
 
-	avail := geche.NewKV(geche.NewMapCache[string, string]())
+	avail := map[string]struct{}{}
 	want := []string{}
 	total := 0
 	total2 := int64(0)
@@ -49,7 +32,7 @@ func main() {
 		if i == 0 {
 			for _, c := range strings.Split(line, ",") {
 				c = strings.TrimSpace(c)
-				avail.Set(c, c)
+				avail[c] = struct{}{}
 			}
 			continue
 		}
@@ -68,13 +51,13 @@ func main() {
 	fmt.Println("2:", total2)
 }
 
-func possible(avail *geche.KV[string], want string) bool {
-	if _, err := avail.Get(want); err == nil {
+func possible(avail map[string]struct{}, want string) bool {
+	if _, ok := avail[want]; ok {
 		return true
 	}
 
 	for l := 1; l < len(want); l++ {
-		if _, err := avail.Get(want[:l]); err == nil {
+		if _, ok := avail[want[:l]]; ok {
 			if possible(avail, want[l:]) {
 				return true
 			}
@@ -86,18 +69,18 @@ func possible(avail *geche.KV[string], want string) bool {
 
 var cache = map[string]int64{}
 
-func countPossible(avail *geche.KV[string], want string) int64 {
+func countPossible(avail map[string]struct{}, want string) int64 {
 	if n, ok := cache[want]; ok {
 		return n
 	}
 
 	n := int64(0)
-	if _, err := avail.Get(want); err == nil {
+	if _, ok := avail[want]; ok {
 		n++
 	}
 
 	for l := 1; l < len(want); l++ {
-		if _, err := avail.Get(want[:l]); err == nil {
+		if _, ok := avail[want[:l]]; ok {
 			n += countPossible(avail, want[l:])
 		}
 	}
